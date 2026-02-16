@@ -7,7 +7,7 @@
   border-radius: 22px;
   overflow: hidden;
   background: radial-gradient(120% 120% at 0% 0%, rgb(var(--ag-surface)) 0%, rgb(var(--ag-bg)) 55%);
-  box-shadow: 0 22px 56px rgba(2, 8, 23, 0.22);
+  box-shadow: none;
 }
 
 .theme-toggle {
@@ -120,3 +120,4 @@
 .quota-fill-danger {
   background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
 }
+
