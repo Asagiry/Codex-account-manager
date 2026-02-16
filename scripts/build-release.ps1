@@ -63,9 +63,6 @@ function Resolve-WebView2Loader {
     Write-Warning "[build-release] Failed to download WebView2Loader fallback: $($_.Exception.Message)"
     return $null
   }
-  finally {
-    # Keep temp folder only for current script lifetime; caller copies file immediately.
-  }
 }
 
 $targetDir = 'C:\Temp\codex-account-manager-target'
@@ -84,7 +81,7 @@ Push-Location $repoRoot
 try {
   New-Item -ItemType Directory -Force -Path $distRoot | Out-Null
 
-  # Best-effort cleanup of old artifacts; ignore if locked.
+  # Keep dist/release aligned with CI release assets (setup + portable only).
   $cleanupItems = @(
     (Join-Path $distRoot '*_setup_x64.exe'),
     (Join-Path $distRoot '*_portable.zip'),
@@ -101,7 +98,7 @@ try {
     }
   }
 
-    Write-Host '[build-release] Building NSIS setup...'
+  Write-Host '[build-release] Building NSIS setup...'
   Invoke-Checked -Command 'npm run tauri -- build --bundles nsis' -ErrorMessage 'Tauri NSIS build failed'
 
   if (!(Test-Path $exeSource)) {
@@ -115,13 +112,12 @@ try {
     $dllSource = $resolvedDll
     Write-Host "[build-release] Using WebView2Loader.dll source: $dllSource"
   } else {
-    Write-Warning "[build-release] WebView2Loader.dll not found; continuing without bare dll artifact."
+    Write-Warning "[build-release] WebView2Loader.dll not found; portable package will include exe only."
   }
 
   $tauriConfig = Get-Content -Raw $tauriConfigPath | ConvertFrom-Json
   $version = $tauriConfig.version
 
-  # Stage portable package in temporary folder, then zip into dist/release.
   $portableStage = Join-Path $env:TEMP ('codex-account-manager-portable-' + [Guid]::NewGuid().ToString('N'))
   New-Item -ItemType Directory -Force -Path $portableStage | Out-Null
 
@@ -147,9 +143,6 @@ Run:
 
   $zipName = "codex_account_manager_v$version`_portable.zip"
   $zipPath = Join-Path $distRoot $zipName
-  if (Test-Path $zipPath) {
-    Remove-Item -Force $zipPath
-  }
   Compress-Archive -Path (Join-Path $portableStage '*') -DestinationPath $zipPath -Force
 
   Remove-Item -Path $portableStage -Recurse -Force -ErrorAction SilentlyContinue
@@ -163,20 +156,26 @@ Run:
   $setupPath = Join-Path $distRoot $setupName
   Copy-Item -Force $setupSource.FullName $setupPath
 
-  $exeDest = Join-Path $distRoot 'codex-account-manager.exe'
-  Copy-Item -Force $exeSource $exeDest
+  # Ensure only the two release files remain in dist/release for CI parity.
+  $unwanted = @(
+    (Join-Path $distRoot 'codex-account-manager.exe'),
+    (Join-Path $distRoot 'WebView2Loader.dll')
+  )
 
-  if ($hasDll) {
-    $dllDest = Join-Path $distRoot 'WebView2Loader.dll'
-    Copy-Item -Force $dllSource $dllDest
-    Write-Host "[build-release] Bare dll: $dllDest"
+  foreach ($file in $unwanted) {
+    if (Test-Path $file) {
+      try {
+        Remove-Item -Path $file -Force -ErrorAction Stop
+      }
+      catch {
+        Write-Warning "[build-release] Could not remove $file (likely locked)."
+      }
+    }
   }
 
   Write-Host "[build-release] Setup:    $setupPath"
   Write-Host "[build-release] Portable: $zipPath"
-  Write-Host "[build-release] Bare exe: $exeDest"
 }
 finally {
   Pop-Location
 }
-

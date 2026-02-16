@@ -47,16 +47,6 @@ jobs:
       - name: Check release artifacts
         shell: pwsh
         run: |
-          $required = @(
-            'dist/release/codex-account-manager.exe'
-          )
-
-          foreach ($path in $required) {
-            if (!(Test-Path $path)) {
-              throw "Required artifact not found: $path"
-            }
-          }
-
           $setup = Get-ChildItem -Path 'dist/release' -Filter '*_setup_x64.exe' | Select-Object -First 1
           if (-not $setup) {
             throw 'Setup artifact not found in dist/release'
@@ -75,7 +65,6 @@ jobs:
           files: |
             dist/release/*_setup_x64.exe
             dist/release/*_portable.zip
-            dist/release/codex-account-manager.exe
           draft: false
           prerelease: false
         env:
@@ -90,7 +79,6 @@ jobs:
           files: |
             dist/release/*_setup_x64.exe
             dist/release/*_portable.zip
-            dist/release/codex-account-manager.exe
           draft: false
           prerelease: true
           make_latest: false
