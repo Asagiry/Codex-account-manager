@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --ag-bg: 250 251 252;
+  --ag-bg: 248 250 252;
   --ag-card: 255 255 255;
-  --ag-surface: 241 245 249;
-  --ag-border: 230 234 240;
+  --ag-surface: 243 247 252;
+  --ag-border: 221 228 238;
   --ag-text: 15 23 42;
   --ag-muted: 100 116 139;
   --ag-primary: 37 99 235;
@@ -15,14 +15,14 @@
 }
 
 :root[data-theme='dark'] {
-  --ag-bg: 10 16 27;
-  --ag-card: 15 23 42;
-  --ag-surface: 30 41 59;
-  --ag-border: 51 65 85;
+  --ag-bg: 9 13 22;
+  --ag-card: 14 20 34;
+  --ag-surface: 22 31 49;
+  --ag-border: 60 76 98;
   --ag-text: 226 232 240;
   --ag-muted: 148 163 184;
-  --ag-primary: 59 130 246;
-  --ag-success: 34 197 94;
+  --ag-primary: 96 165 250;
+  --ag-success: 74 222 128;
   --ag-danger: 248 113 113;
 }
 
