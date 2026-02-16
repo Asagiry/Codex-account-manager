@@ -23,6 +23,7 @@ pnpm-debug.log*
 !.env.example
 auth.json
 vault.json
+.agent
 
 # Local development references
 refs/

@@ -1,32 +1,62 @@
-﻿.titlebar {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid rgb(var(--ag-border));
-  background: linear-gradient(90deg, rgb(var(--ag-card)) 0%, rgb(var(--ag-surface)) 100%);
-  user-select: none;
-  padding: 4px 6px;
-  gap: 8px;
+﻿.app-outer {
+  padding: 10px;
+  background: radial-gradient(120% 120% at 0% 0%, rgb(var(--ag-surface)) 0%, rgb(var(--ag-bg)) 55%);
 }
 
-.titlebar-drag {
-  flex: 1;
-  height: 100%;
-  border-radius: 10px;
+.app-shell {
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 22px 56px rgba(2, 8, 23, 0.22);
 }
 
-.titlebar-controls {
-  margin-left: auto;
-  display: inline-flex;
+.theme-toggle {
+  position: relative;
+  height: 36px;
+  width: 154px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--ag-border));
+  background: rgb(var(--ag-card));
+  padding: 0 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(var(--ag-muted));
+  cursor: pointer;
 }
 
-.titlebar-btn {
-  width: 34px;
-  height: 30px;
+.theme-chip {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 5px);
+  height: calc(100% - 6px);
+  border-radius: 999px;
+  background: rgb(var(--ag-primary) / 0.18);
+  border: 1px solid rgb(var(--ag-primary) / 0.35);
+  transition: transform 160ms ease;
+}
+
+.theme-chip-right {
+  transform: translateX(100%);
+}
+
+.theme-side {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.window-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   border: 1px solid rgb(var(--ag-border));
-  border-radius: 10px;
   background: rgb(var(--ag-card));
   color: rgb(var(--ag-muted));
   display: inline-flex;
@@ -36,13 +66,13 @@
   transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
-.titlebar-btn:hover {
+.window-btn:hover {
   background: rgb(var(--ag-surface));
   color: rgb(var(--ag-text));
   border-color: rgb(var(--ag-primary) / 0.35);
 }
 
-.titlebar-btn-close:hover {
+.window-btn-close:hover {
   background: #ef4444;
   border-color: #ef4444;
   color: #fff;
