@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react'
+﻿import { useCallback, useEffect, useState, type MouseEvent } from 'react'
 import { Minus, MoonStar, Network, Sun, Users, X } from 'lucide-react'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { getVersion } from '@tauri-apps/api/app'
@@ -23,7 +23,9 @@ function readInitialTheme(): ThemeMode {
 function isInteractiveTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
   return Boolean(
-    target.closest('button, input, textarea, select, a, [role="button"], [contenteditable="true"], [data-no-drag]')
+    target.closest(
+      'button, input, textarea, select, a, [role="button"], [contenteditable="true"], [data-no-drag], .allow-select'
+    )
   )
 }
 
@@ -63,16 +65,12 @@ function App() {
       .catch(() => setVersion('0.2.0'))
   }, [])
 
-  useEffect(() => {
-    const onPointerDown = (event: PointerEvent) => {
-      if (event.button !== 0) return
-      if (isInteractiveTarget(event.target)) return
-      void appWindow.startDragging()
-    }
-
-    window.addEventListener('pointerdown', onPointerDown)
-    return () => window.removeEventListener('pointerdown', onPointerDown)
-  }, [])
+  const handleShellMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return
+    if (isInteractiveTarget(event.target)) return
+    event.preventDefault()
+    void appWindow.startDragging()
+  }
 
   const minimizeWindow = async () => {
     await appWindow.minimize()
@@ -88,7 +86,7 @@ function App() {
 
   return (
     <div className="app-outer h-full w-full bg-ag-bg text-ag-text">
-      <div className="app-shell h-full w-full flex flex-col border border-ag-border bg-ag-bg">
+      <div className="app-shell h-full w-full flex flex-col border border-ag-border bg-ag-bg" onMouseDown={handleShellMouseDown}>
         <header className="h-24 px-6 border-b border-ag-border bg-ag-card/90 backdrop-blur-md sticky top-0 z-20">
           <div className="h-full max-w-[1440px] mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -175,3 +173,4 @@ function App() {
 }
 
 export default App
+

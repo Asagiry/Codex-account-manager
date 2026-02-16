@@ -82,7 +82,7 @@ function AccountInfoModal({ account, onClose }: { account: Account | null; onClo
           </button>
         </div>
         <div className="p-4 bg-ag-surface">
-          <pre className="m-0 max-h-[65vh] overflow-auto rounded-xl border border-ag-border bg-ag-card p-4 text-xs leading-5 text-ag-text">
+          <pre className="allow-select m-0 max-h-[65vh] overflow-auto rounded-xl border border-ag-border bg-ag-card p-4 text-xs leading-5 text-ag-text">
             {JSON.stringify(account, null, 2)}
           </pre>
         </div>
@@ -306,7 +306,7 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
                   >
                     <td className="px-4 py-3 align-top">
                       <div className="font-semibold text-ag-text inline-flex items-center gap-2">
-                        <span>{account.email ?? 'Unknown email'}</span>
+                        <span className="allow-select">{account.email ?? 'Unknown email'}</span>
                         <span className="rounded-full border border-ag-border bg-ag-surface px-2 py-0.5 text-[10px] font-bold text-ag-muted">
                           (TEAM)
                         </span>
@@ -398,3 +398,4 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
     </div>
   )
 }
+

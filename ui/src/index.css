@@ -33,11 +33,11 @@ body,
   width: 100%;
   height: 100%;
   overscroll-behavior: none;
+  background: transparent;
 }
 
 body {
   font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: rgb(var(--ag-bg));
   color: rgb(var(--ag-text));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -46,6 +46,15 @@ body {
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.allow-select,
+input,
+textarea,
+select,
+option {
+  user-select: text;
 }
 
 ::-webkit-scrollbar {
