@@ -1,0 +1,18 @@
+{
+  "name": "codex-account-manager",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Desktop manager for Codex/OpenAI accounts",
+  "scripts": {
+    "ui:dev": "npm --prefix ui run dev -- --host",
+    "ui:build": "npm --prefix ui run build",
+    "dev": "tauri dev",
+    "build": "tauri build --no-bundle",
+    "tauri": "tauri",
+    "build:win": "powershell -ExecutionPolicy Bypass -File scripts/build-win.ps1",
+    "build:release": "powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.0"
+  }
+}

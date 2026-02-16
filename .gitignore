@@ -1,0 +1,42 @@
+# Node / JS
+node_modules/
+ui/node_modules/
+ui/dist/
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/target_nospace/
+
+# Release artifacts
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment / local secrets
+.env
+.env.*
+!.env.example
+auth.json
+vault.json
+
+# Local development references
+refs/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+IMPLEMENTATION_PLAN.md
