@@ -383,6 +383,7 @@ foreach ($cmd in $cmds) {{ \
   if (Get-Command $cmd -ErrorAction SilentlyContinue) {{ \
     & $cmd --reuse-window --command workbench.action.reloadWindow | Out-Null; \
     $ok=$true; \
+    break; \
   }} \
 }}; \
 if ($ok) {{ exit 0 }} else {{ exit 2 }}"
@@ -419,23 +420,31 @@ fn restart_ide_processes(process_names: &[&str]) -> Result<bool, String> {
     let script = format!(
         "$ErrorActionPreference='SilentlyContinue'; \
 $names=@({quoted}); \
-$found=$false; \
+$all=@(); \
 foreach ($name in $names) {{ \
-  $procs=Get-Process -Name $name -ErrorAction SilentlyContinue; \
-  foreach ($p in $procs) {{ \
-    $found=$true; \
-    $path=$p.Path; \
-    Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue; \
-    if ($path) {{ Start-Process -WindowStyle Hidden -FilePath $path | Out-Null }} \
-  }} \
+  $all += Get-Process -Name $name -ErrorAction SilentlyContinue; \
 }}; \
-if ($found) {{ exit 0 }} else {{ exit 2 }}"
+if (-not $all -or $all.Count -eq 0) {{ exit 2 }}; \
+$launchPath=$null; \
+$main=$all | Where-Object {{ $_.MainWindowHandle -ne 0 -and $_.Path }} | Select-Object -First 1; \
+if ($main) {{ $launchPath=$main.Path }} else {{ \
+  $any=$all | Where-Object {{ $_.Path }} | Select-Object -First 1; \
+  if ($any) {{ $launchPath=$any.Path }}; \
+}}; \
+foreach ($p in $all) {{ Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue }}; \
+if ($launchPath) {{ \
+  Start-Process -WindowStyle Hidden -FilePath $launchPath | Out-Null; \
+  exit 0 \
+}} else {{ \
+  exit 3 \
+}}"
     );
 
     let output = run_hidden_powershell(&script)?;
     match output.status.code() {
         Some(0) => Ok(true),
         Some(2) => Ok(false),
+        Some(3) => Err("IDE process path was not found for restart".to_string()),
         _ => {
             let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
             if stderr.is_empty() {
@@ -451,7 +460,6 @@ if ($found) {{ exit 0 }} else {{ exit 2 }}"
 fn restart_ide_processes(_process_names: &[&str]) -> Result<bool, String> {
     Ok(false)
 }
-
 fn reload_ide_windows(ide: &str) -> Result<bool, String> {
     match trigger_ide_reload_command(ide) {
         Ok(true) => Ok(true),
