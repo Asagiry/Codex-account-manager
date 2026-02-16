@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { CheckCircle2, Loader2, Plus, RefreshCw, Trash2, WifiOff } from 'lucide-react'
 import { api } from '../api'
 import type { AppData, ProxyEntry } from '../types'
@@ -68,7 +68,7 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
 
   return (
     <div className="page-fade h-full flex flex-col gap-4">
-      <div className="rounded-2xl border border-ag-border bg-white shadow-ag p-4">
+      <div className="rounded-2xl border border-ag-border bg-ag-card shadow-ag p-4">
         <div className="text-sm font-semibold text-ag-text mb-2">Add proxy</div>
         <div className="text-xs text-ag-muted mb-3">
           Required format: <span className="font-semibold">login:pass@ip:port</span>
@@ -88,7 +88,7 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
             <Plus size={16} /> Save
           </button>
           <button
-            className="h-10 px-4 rounded-xl border border-ag-border text-sm font-semibold text-ag-text hover:bg-slate-50"
+            className="h-10 px-4 rounded-xl border border-ag-border text-sm font-semibold text-ag-text hover:bg-ag-surface"
             onClick={() => activate(undefined)}
             disabled={busyId === 'disable'}
           >
@@ -101,10 +101,10 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
       )}
 
-      <div className="flex-1 min-h-0 rounded-2xl border border-ag-border bg-white shadow-ag overflow-hidden">
+      <div className="flex-1 min-h-0 rounded-2xl border border-ag-border bg-ag-card shadow-ag overflow-hidden">
         <div className="h-full overflow-auto">
           <table className="w-full border-collapse text-sm">
-            <thead className="sticky top-0 bg-slate-50 z-10">
+            <thead className="sticky top-0 bg-ag-surface z-10">
               <tr className="text-left text-xs uppercase tracking-wide text-ag-muted border-b border-ag-border">
                 <th className="px-4 py-3">Proxy</th>
                 <th className="px-4 py-3">Status</th>
@@ -126,7 +126,7 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
                 const loading = busyId === proxy.id
 
                 return (
-                  <tr key={proxy.id} className={`border-b border-ag-border/70 ${active ? 'bg-blue-50/40' : ''}`}>
+                  <tr key={proxy.id} className={`border-b border-ag-border/70 ${active ? 'bg-ag-surface/70' : ''}`}>
                     <td className="px-4 py-3 align-top">
                       <div className="font-semibold text-ag-text">{proxy.raw}</div>
                       <div className="text-xs text-ag-muted mt-1">
@@ -154,8 +154,8 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
                         <button
                           className={`h-8 px-3 rounded-lg text-xs font-semibold border ${
                             active
-                              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                              : 'border-ag-border text-ag-text hover:bg-slate-50'
+                              ? 'border-ag-success/35 bg-ag-surface text-ag-success'
+                              : 'border-ag-border text-ag-text hover:bg-ag-surface'
                           }`}
                           onClick={() => activate(proxy.id)}
                           disabled={loading}
@@ -164,7 +164,7 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
                         </button>
 
                         <button
-                          className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-slate-50"
+                          className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-ag-surface"
                           onClick={() => runTest(proxy)}
                           disabled={loading}
                           title="Test proxy"
@@ -192,3 +192,4 @@ export function ProxyTab({ data, setData }: ProxyTabProps) {
     </div>
   )
 }
+

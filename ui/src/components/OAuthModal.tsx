@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Copy, Link2, Loader2, X } from 'lucide-react'
 import { api } from '../api'
 import type { OAuthFlowResponse, OAuthStartResponse } from '../types'
@@ -98,7 +98,7 @@ export function OAuthModal({ open, onClose, onCompleted }: OAuthModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-ag-border bg-white shadow-ag">
+      <div className="w-full max-w-3xl rounded-2xl border border-ag-border bg-ag-card shadow-ag">
         <div className="flex items-center justify-between px-5 py-4 border-b border-ag-border">
           <div>
             <h2 className="m-0 text-lg font-semibold text-ag-text">OAuth Login</h2>
@@ -107,7 +107,7 @@ export function OAuthModal({ open, onClose, onCompleted }: OAuthModalProps) {
             </p>
           </div>
           <button
-            className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-slate-50"
+            className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-ag-surface"
             onClick={onClose}
           >
             <X size={16} />
@@ -115,7 +115,7 @@ export function OAuthModal({ open, onClose, onCompleted }: OAuthModalProps) {
         </div>
 
         <div className="p-5 space-y-4">
-          <div className="rounded-xl border border-ag-border bg-slate-50 px-4 py-3 text-sm text-ag-muted">
+          <div className="rounded-xl border border-ag-border bg-ag-surface px-4 py-3 text-sm text-ag-muted">
             0. If your region is blocked, activate proxy in the Proxy tab first.<br />
             1. Click "Generate login URL".<br />
             2. Copy the URL and open it in browser.<br />
@@ -136,17 +136,17 @@ export function OAuthModal({ open, onClose, onCompleted }: OAuthModalProps) {
           {startData && (
             <div className="space-y-3">
               <div className="rounded-xl border border-ag-border overflow-hidden">
-                <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-ag-muted border-b border-ag-border bg-slate-50">
+                <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-ag-muted border-b border-ag-border bg-ag-surface">
                   Authorization URL
                 </div>
                 <textarea
-                  className="w-full h-24 p-3 text-xs text-slate-700 bg-white border-0 outline-none resize-none"
+                  className="w-full h-24 p-3 text-xs text-ag-text bg-ag-card border-0 outline-none resize-none"
                   value={startData.authorizationUrl}
                   readOnly
                 />
-                <div className="px-3 py-2 border-t border-ag-border bg-slate-50 flex justify-end">
+                <div className="px-3 py-2 border-t border-ag-border bg-ag-surface flex justify-end">
                   <button
-                    className="h-8 px-3 rounded-lg border border-ag-border text-sm text-ag-text hover:bg-white inline-flex items-center gap-2"
+                    className="h-8 px-3 rounded-lg border border-ag-border text-sm text-ag-text hover:bg-ag-card inline-flex items-center gap-2"
                     onClick={copyLink}
                   >
                     <Copy size={14} /> Copy URL

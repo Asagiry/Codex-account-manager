@@ -1,6 +1,6 @@
 [package]
 name = "codex-account-manager"
-version = "0.1.0"
+version = "0.2.0"
 description = "Codex Account Manager"
 authors = ["Asagiry"]
 license = ""
@@ -29,3 +29,5 @@ tauri = { version = "2.10.0", features = [] }
 tauri-plugin-log = "2"
 url = "2"
 uuid = { version = "1", features = ["v4", "serde"] }
+
+

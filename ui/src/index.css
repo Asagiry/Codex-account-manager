@@ -1,6 +1,30 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --ag-bg: 250 251 252;
+  --ag-card: 255 255 255;
+  --ag-surface: 241 245 249;
+  --ag-border: 230 234 240;
+  --ag-text: 15 23 42;
+  --ag-muted: 100 116 139;
+  --ag-primary: 37 99 235;
+  --ag-success: 22 163 74;
+  --ag-danger: 220 38 38;
+}
+
+:root[data-theme='dark'] {
+  --ag-bg: 10 16 27;
+  --ag-card: 15 23 42;
+  --ag-surface: 30 41 59;
+  --ag-border: 51 65 85;
+  --ag-text: 226 232 240;
+  --ag-muted: 148 163 184;
+  --ag-primary: 59 130 246;
+  --ag-success: 34 197 94;
+  --ag-danger: 248 113 113;
+}
 
 html,
 body,
@@ -12,9 +36,9 @@ body,
 }
 
 body {
-  font-family: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #fafbfc;
-  color: #0f172a;
+  font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: rgb(var(--ag-bg));
+  color: rgb(var(--ag-text));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

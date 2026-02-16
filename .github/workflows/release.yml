@@ -1,9 +1,11 @@
-name: Release Windows
+﻿name: Release Windows
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - "v*"
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -26,6 +28,13 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Read app version
+        id: meta
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Raw 'src-tauri/tauri.conf.json' | ConvertFrom-Json).version
+          "version=$version" >> $env:GITHUB_OUTPUT
+
       - name: Install dependencies
         run: |
           npm ci
@@ -39,8 +48,8 @@ jobs:
         shell: pwsh
         run: |
           $required = @(
-            "dist/release/codex-account-manager.exe",
-            "dist/release/WebView2Loader.dll"
+            'dist/release/codex-account-manager.exe',
+            'dist/release/WebView2Loader.dll'
           )
 
           foreach ($path in $required) {
@@ -49,25 +58,44 @@ jobs:
             }
           }
 
-          $setup = Get-ChildItem -Path "dist/release" -Filter "*-windows-setup.exe" | Select-Object -First 1
+          $setup = Get-ChildItem -Path 'dist/release' -Filter '*_setup_x64.exe' | Select-Object -First 1
           if (-not $setup) {
-            throw "Setup artifact not found in dist/release"
+            throw 'Setup artifact not found in dist/release'
           }
 
-          $portable = Get-ChildItem -Path "dist/release" -Filter "*-windows-portable.zip" | Select-Object -First 1
+          $portable = Get-ChildItem -Path 'dist/release' -Filter '*_portable.zip' | Select-Object -First 1
           if (-not $portable) {
-            throw "Portable ZIP artifact not found in dist/release"
+            throw 'Portable ZIP artifact not found in dist/release'
           }
 
-      - name: Publish GitHub Release
+      - name: Publish versioned GitHub Release (tags)
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
+          name: Codex Account Manager ${{ github.ref_name }}
           files: |
-            dist/release/*-windows-setup.exe
-            dist/release/*-windows-portable.zip
+            dist/release/*_setup_x64.exe
+            dist/release/*_portable.zip
             dist/release/codex-account-manager.exe
             dist/release/WebView2Loader.dll
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish rolling Release (main)
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: main-latest
+          name: Codex Account Manager main-latest (v${{ steps.meta.outputs.version }})
+          files: |
+            dist/release/*_setup_x64.exe
+            dist/release/*_portable.zip
+            dist/release/codex-account-manager.exe
+            dist/release/WebView2Loader.dll
+          draft: false
+          prerelease: true
+          make_latest: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

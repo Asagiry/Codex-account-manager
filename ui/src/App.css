@@ -1,21 +1,14 @@
-.titlebar {
+﻿.titlebar {
   height: 38px;
   display: flex;
   align-items: stretch;
-  border-bottom: 1px solid #dbe3ee;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 249, 255, 0.98) 100%);
+  border-bottom: 1px solid rgb(var(--ag-border));
+  background: linear-gradient(90deg, rgb(var(--ag-card)) 0%, rgb(var(--ag-surface)) 100%);
   user-select: none;
 }
 
-.titlebar-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 14px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #334155;
+.titlebar-drag {
+  flex: 1;
 }
 
 .titlebar-controls {
@@ -27,9 +20,9 @@
 .titlebar-btn {
   width: 46px;
   border: 0;
-  border-left: 1px solid #e2e8f0;
+  border-left: 1px solid rgb(var(--ag-border));
   background: transparent;
-  color: #334155;
+  color: rgb(var(--ag-muted));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +30,8 @@
 }
 
 .titlebar-btn:hover {
-  background: #eaf1fb;
+  background: rgb(var(--ag-surface));
+  color: rgb(var(--ag-text));
 }
 
 .titlebar-btn-close:hover {
@@ -64,9 +58,9 @@
   position: relative;
   height: 10px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 100%);
+  background: linear-gradient(90deg, rgb(var(--ag-surface)) 0%, rgb(var(--ag-card)) 100%);
   overflow: hidden;
-  border: 1px solid #dbe4ee;
+  border: 1px solid rgb(var(--ag-border));
 }
 
 .quota-fill {

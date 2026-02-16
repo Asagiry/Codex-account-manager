@@ -1,17 +1,23 @@
-# Codex Account Manager
+﻿# Codex Account Manager
 
-Codex Account Manager is a Windows desktop application for managing multiple Codex/OpenAI accounts with OAuth login, quota monitoring, and proxy support.
+Codex Account Manager is a Windows desktop app for managing multiple Codex/OpenAI accounts with OAuth login, quota tracking, proxy support, and quick IDE account switching.
+
+## Version
+
+Current app version: `0.2.0`
 
 ## Key Features
 
-- OAuth login flow (manual URL open + callback paste + local callback listener).
-- Multi-account table with quick account switching.
+- OAuth login flow (manual login URL copy + callback paste + callback auto-detection).
+- Multi-account management (accounts are added as separate rows, not replaced).
 - Quota tracking for 5-hour and weekly windows.
-- Automatic quota refresh every 5 minutes.
-- Manual per-account and bulk quota refresh.
+- Quota bars show **remaining** quota (`100 - used`).
+- Auto refresh for quotas every 5 minutes.
+- Manual refresh controls for one account or all accounts.
 - Proxy management (`login:pass@ip:port`) with connectivity test.
-- IDE-aware account switch workflow with automatic IDE reload attempt.
-- Local-only data storage on the machine.
+- IDE-aware account switching with automatic reload/restart attempt.
+- Light/Dark theme toggle.
+- Local-only state storage on your machine.
 
 ## Platform
 
@@ -26,7 +32,7 @@ Codex Account Manager is a Windows desktop application for managing multiple Cod
 
 ## Local Data
 
-Application state is stored at:
+Application state:
 
 - `%LOCALAPPDATA%\CodexAccountManager\state.json`
 
@@ -38,15 +44,7 @@ Codex auth file used during account switch:
 
 - Node.js LTS
 - Rust toolchain
-- WebView2 Runtime
-
-Optional (GNU toolchain setup):
-
-```powershell
-scoop install mingw
-rustup toolchain install stable-x86_64-pc-windows-gnu
-rustup default stable-x86_64-pc-windows-gnu
-```
+- Microsoft Edge WebView2 Runtime
 
 ## Development
 
@@ -57,7 +55,7 @@ npm ci
 npm --prefix ui ci
 ```
 
-Run in development mode:
+Run dev mode:
 
 ```powershell
 npm run dev
@@ -65,41 +63,37 @@ npm run dev
 
 ## Build
 
-Build bare executable (no installer bundle):
+Build bare executable (no installer):
 
 ```powershell
 npm run build:win
 ```
 
-Expected output:
+Outputs:
 
 - `dist/release/codex-account-manager.exe`
 - `dist/release/WebView2Loader.dll`
 
-Build release artifacts (setup + portable zip):
+Build release artifacts (setup + portable):
 
 ```powershell
 npm run build:release
 ```
 
-Expected output:
+Outputs:
 
-- `dist/release/CodexAccountManager-v<version>-windows-setup.exe`
-- `dist/release/CodexAccountManager-v<version>-windows-portable.zip`
+- `dist/release/codex_account_manager_v<version>_setup_x64.exe`
+- `dist/release/codex_account_manager_v<version>_portable.zip`
 - `dist/release/codex-account-manager.exe`
 - `dist/release/WebView2Loader.dll`
 
-## CI / Release
+## CI/CD and Releases
 
-GitHub Actions workflow:
+Workflow file:
 
 - `.github/workflows/release.yml`
 
-Release is triggered by tags matching `v*`.
+Behavior:
 
-Example:
-
-```powershell
-git tag v0.1.0
-git push origin v0.1.0
-```
+- Push to `main` builds artifacts and updates rolling pre-release tag `main-latest`.
+- Push tag `v*` builds artifacts and publishes a versioned stable GitHub Release.

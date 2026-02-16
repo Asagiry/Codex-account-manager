@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ArrowRightLeft,
   CircleAlert,
@@ -10,7 +10,7 @@ import {
   UserPlus
 } from 'lucide-react'
 import { api } from '../api'
-import { clampPercent, formatPercent, formatTimeUntil } from '../format'
+import { formatRemainingPercent, remainingPercent, formatTimeUntil } from '../format'
 import type { Account, AppData, IdeTarget } from '../types'
 import { OAuthModal } from './OAuthModal'
 
@@ -31,9 +31,9 @@ const IDE_OPTIONS: Array<{ value: IdeTarget; label: string }> = [
 
 const AUTO_REFRESH_MS = 5 * 60 * 1000
 
-function quotaClass(percent: number): string {
-  if (percent >= 90) return 'quota-fill-danger'
-  if (percent >= 70) return 'quota-fill-warn'
+function quotaClass(remaining: number): string {
+  if (remaining <= 10) return 'quota-fill-danger'
+  if (remaining <= 30) return 'quota-fill-warn'
   return 'quota-fill-good'
 }
 
@@ -46,16 +46,17 @@ function QuotaCell({
   resetAt: number | null | undefined
   title: string
 }) {
-  const percent = clampPercent(value)
+  const remaining = remainingPercent(value)
+  const barPercent = remaining ?? 0
 
   return (
     <div className="min-w-[180px]">
       <div className="flex items-center justify-between text-xs text-ag-muted mb-1">
         <span>{title}</span>
-        <span className="font-semibold text-ag-text">{formatPercent(value)}</span>
+        <span className="font-semibold text-ag-text">{formatRemainingPercent(value)} left</span>
       </div>
       <div className="quota-track">
-        <div className={`quota-fill ${quotaClass(percent)}`} style={{ width: `${percent}%` }} />
+        <div className={`quota-fill ${quotaClass(barPercent)}`} style={{ width: `${barPercent}%` }} />
       </div>
       <div className="text-xs text-ag-muted mt-1">reset {formatTimeUntil(resetAt)}</div>
     </div>
@@ -67,21 +68,21 @@ function AccountInfoModal({ account, onClose }: { account: Account | null; onClo
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-ag-border bg-white shadow-ag overflow-hidden">
+      <div className="w-full max-w-3xl rounded-2xl border border-ag-border bg-ag-card shadow-ag overflow-hidden">
         <div className="px-5 py-4 border-b border-ag-border flex items-center justify-between">
           <div>
             <div className="text-lg font-semibold text-ag-text">Account Info</div>
             <div className="text-xs text-ag-muted mt-1">Full account payload currently stored in app data</div>
           </div>
           <button
-            className="h-9 px-3 rounded-lg border border-ag-border text-sm font-semibold text-ag-text hover:bg-slate-50"
+            className="h-9 px-3 rounded-lg border border-ag-border text-sm font-semibold text-ag-text hover:bg-ag-surface"
             onClick={onClose}
           >
             Close
           </button>
         </div>
-        <div className="p-4 bg-slate-50">
-          <pre className="m-0 max-h-[65vh] overflow-auto rounded-xl border border-ag-border bg-white p-4 text-xs leading-5 text-slate-800">
+        <div className="p-4 bg-ag-surface">
+          <pre className="m-0 max-h-[65vh] overflow-auto rounded-xl border border-ag-border bg-ag-card p-4 text-xs leading-5 text-ag-text">
             {JSON.stringify(account, null, 2)}
           </pre>
         </div>
@@ -222,7 +223,7 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
 
       <AccountInfoModal account={infoAccount} onClose={() => setInfoAccount(null)} />
 
-      <div className="rounded-2xl border border-ag-border bg-white shadow-ag p-4 flex items-center gap-3 flex-wrap">
+      <div className="rounded-2xl border border-ag-border bg-ag-card shadow-ag p-4 flex items-center gap-3 flex-wrap">
         <button
           className="h-10 px-4 rounded-xl bg-ag-primary text-white text-sm font-semibold hover:bg-blue-700 inline-flex items-center gap-2"
           onClick={() => setOauthOpen(true)}
@@ -231,7 +232,7 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
         </button>
 
         <button
-          className="h-10 px-4 rounded-xl border border-ag-border text-sm font-semibold text-ag-text hover:bg-slate-50 inline-flex items-center gap-2"
+          className="h-10 px-4 rounded-xl border border-ag-border text-sm font-semibold text-ag-text hover:bg-ag-surface inline-flex items-center gap-2"
           onClick={() => void refreshAll(false)}
           disabled={refreshingAll || data.accounts.length === 0}
         >
@@ -239,10 +240,10 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
           Refresh all quotas
         </button>
 
-        <div className="h-10 px-3 rounded-xl border border-ag-border inline-flex items-center gap-2">
+        <div className="h-10 px-3 rounded-xl border border-ag-border inline-flex items-center gap-2 bg-ag-card">
           <span className="text-xs text-ag-muted font-semibold">IDE for switch</span>
           <select
-            className="h-8 rounded-lg border border-ag-border bg-white px-2 text-sm text-ag-text outline-none"
+            className="h-8 rounded-lg border border-ag-border bg-ag-card px-2 text-sm text-ag-text outline-none"
             value={ideTarget ?? ''}
             onChange={(event) => void changeIdeTarget(event.target.value)}
           >
@@ -270,10 +271,10 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
       )}
 
-      <div className="flex-1 min-h-0 rounded-2xl border border-ag-border bg-white shadow-ag overflow-hidden">
+      <div className="flex-1 min-h-0 rounded-2xl border border-ag-border bg-ag-card shadow-ag overflow-hidden">
         <div className="h-full overflow-auto">
           <table className="w-full border-collapse text-sm">
-            <thead className="sticky top-0 bg-slate-50 z-10">
+            <thead className="sticky top-0 bg-ag-surface z-10">
               <tr className="text-left text-xs uppercase tracking-wide text-ag-muted border-b border-ag-border">
                 <th className="px-4 py-3">Account</th>
                 <th className="px-4 py-3">5h quota</th>
@@ -301,12 +302,12 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
                 return (
                   <tr
                     key={account.id}
-                    className={`border-b border-ag-border/70 hover:bg-slate-50/70 ${isActive ? 'bg-blue-50/40' : ''}`}
+                    className={`border-b border-ag-border/70 hover:bg-ag-surface/70 ${isActive ? 'bg-ag-surface/70' : ''}`}
                   >
                     <td className="px-4 py-3 align-top">
                       <div className="font-semibold text-ag-text inline-flex items-center gap-2">
                         <span>{account.email ?? 'Unknown email'}</span>
-                        <span className="rounded-full border border-ag-border bg-slate-50 px-2 py-0.5 text-[10px] font-bold text-ag-muted">
+                        <span className="rounded-full border border-ag-border bg-ag-surface px-2 py-0.5 text-[10px] font-bold text-ag-muted">
                           (TEAM)
                         </span>
                       </div>
@@ -314,7 +315,7 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
                         last login: {new Date(account.lastLoginAt * 1000).toLocaleString()}
                       </div>
                       {isActive && (
-                        <div className="mt-2 inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
+                        <div className="mt-2 inline-flex items-center gap-1 rounded-full border border-ag-primary/35 bg-ag-surface px-2 py-0.5 text-[11px] font-semibold text-ag-primary">
                           Active in Codex
                         </div>
                       )}
@@ -349,8 +350,8 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
                         <button
                           className={`h-8 w-8 inline-flex items-center justify-center rounded-lg border ${
                             isActive
-                              ? 'border-blue-300 bg-blue-100 text-blue-700'
-                              : 'border-ag-border text-ag-muted hover:text-ag-text hover:bg-slate-50'
+                              ? 'border-ag-primary/45 bg-ag-surface text-ag-primary'
+                              : 'border-ag-border text-ag-muted hover:text-ag-text hover:bg-ag-surface'
                           }`}
                           onClick={() => void switchAccount(account.id)}
                           disabled={switching || refreshingAll || autoRefreshing}
@@ -360,7 +361,7 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
                         </button>
 
                         <button
-                          className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-slate-50"
+                          className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-ag-surface"
                           onClick={() => void refreshOne(account.id)}
                           disabled={quotaLoading || switching || removing}
                           title="Force refresh quota"
@@ -369,7 +370,7 @@ export function AccountsTab({ data, setData, reload }: AccountsTabProps) {
                         </button>
 
                         <button
-                          className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-slate-50"
+                          className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-ag-border text-ag-muted hover:text-ag-text hover:bg-ag-surface"
                           onClick={() => setInfoAccount(account)}
                           disabled={quotaLoading || switching || removing}
                           title="Account details"
