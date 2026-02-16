@@ -29,7 +29,9 @@ vault.json
 refs/
 
 # IDE
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
 .idea/
 *.suo
 *.user

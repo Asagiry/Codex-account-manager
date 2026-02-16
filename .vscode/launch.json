@@ -1,0 +1,13 @@
+﻿{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "F5 Build Release (dist/release)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "echo Build completed. Check dist/release",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Build Release (CI parity)"
+    }
+  ]
+}
