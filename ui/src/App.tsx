@@ -21,7 +21,7 @@ function readInitialTheme(): ThemeMode {
 }
 
 function isInteractiveTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false
+  if (!(target instanceof Element)) return false
   return Boolean(
     target.closest(
       'button, input, textarea, select, a, [role="button"], [contenteditable="true"], [data-no-drag], .allow-select'
@@ -85,8 +85,8 @@ function App() {
   }
 
   return (
-    <div className="app-outer h-full w-full bg-ag-bg text-ag-text">
-      <div className="app-shell h-full w-full flex flex-col border border-ag-border bg-ag-bg" onMouseDown={handleShellMouseDown}>
+    <div className="app-outer h-full w-full text-ag-text">
+      <div className="app-shell h-full w-full flex flex-col bg-ag-bg" onMouseDown={handleShellMouseDown}>
         <header className="h-24 px-6 border-b border-ag-border bg-ag-card/90 backdrop-blur-md sticky top-0 z-20">
           <div className="h-full max-w-[1440px] mx-auto flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -173,4 +173,6 @@ function App() {
 }
 
 export default App
+
+
 
