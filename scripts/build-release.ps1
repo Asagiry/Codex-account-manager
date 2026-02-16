@@ -101,10 +101,7 @@ try {
     }
   }
 
-  Write-Host '[build-release] Building UI...'
-  Invoke-Checked -Command 'npm --prefix ui run build' -ErrorMessage 'UI build failed'
-
-  Write-Host '[build-release] Building NSIS setup...'
+    Write-Host '[build-release] Building NSIS setup...'
   Invoke-Checked -Command 'npm run tauri -- build --bundles nsis' -ErrorMessage 'Tauri NSIS build failed'
 
   if (!(Test-Path $exeSource)) {
@@ -182,3 +179,4 @@ Run:
 finally {
   Pop-Location
 }
+
